@@ -1,0 +1,316 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-02-01 00:04+0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.16.0\n"
+
+#: main.py:82
+msgid "Tekshirish✅"
+msgstr ""
+
+#: main.py:89
+msgid "Hali a'zo bo'lmadingiz🤨"
+msgstr ""
+
+#: main.py:91
+msgid "Oldin kanallarga a'zo bo'ling👇"
+msgstr ""
+
+#: main.py:95
+msgid "Muvofaqiyatliy☺ qayta /start ni bosing"
+msgstr ""
+
+#: bot/bot_commands/commands.py:18
+msgid "🛫Botni ishga tushirish"
+msgstr ""
+
+#: bot/button_functions/inline_buttons.py:9
+msgid "🇺🇿UZ"
+msgstr ""
+
+#: bot/button_functions/inline_buttons.py:10
+msgid "🇷🇺RU"
+msgstr ""
+
+#: bot/button_functions/inline_buttons.py:19
+msgid "✅Tasdiqlaysizmi"
+msgstr ""
+
+#: bot/button_functions/inline_buttons.py:21
+msgid "❌Inkor qilish"
+msgstr ""
+
+#: bot/button_functions/inline_buttons.py:31
+msgid "✅Ha"
+msgstr ""
+
+#: bot/button_functions/inline_buttons.py:33
+msgid "❌Yo'q"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:9
+msgid "💱Valyuta ayriboshlash(UZS-CNY)"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:10
+msgid "🔍Kursni bilish"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:11
+msgid "🌐Ijtimoiy  tarmoqlarimiz"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:12
+msgid "💸Tranzaksiyalar tarixi"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:13
+msgid "🛠Sozlamalar"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:23
+msgid "🇺🇿 ♻️ 🇷🇺 Tilni almashtirish"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:24
+#: bot/button_functions/keyboard_buttons.py:36
+#: bot/button_functions/keyboard_buttons.py:47
+#: bot/button_functions/keyboard_buttons.py:59
+#: bot/button_functions/keyboard_buttons.py:68
+msgid "🔙Orqaga"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:34
+msgid "🇨🇳CNY"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:35
+msgid "🇺🇿UZS"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:46
+msgid "✅Tasdiqlash"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:57
+msgid "💳Humo"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:58
+msgid "🗃Uzcard"
+msgstr ""
+
+#: bot/button_functions/keyboard_buttons.py:74
+msgid "📞Telefon"
+msgstr ""
+
+#: bot/handlers/callback_handlers.py:20
+msgid "Til tanlandi"
+msgstr ""
+
+#: bot/handlers/callback_handlers.py:29
+msgid ""
+"\n"
+"<b>📈 Tranzaksiya raqami</b>: 🔢 {obj}\n"
+"\n"
+"<b>Mijoz:</b> {first_name}\n"
+"<b>Telefon:</b> {phone_number}\n"
+"<b>Yuan miqdori:</b> {cny_amount}¥\n"
+"<b>UZS miqdori:</b> {uzs_amount} UZS\n"
+"\n"
+"<b>Admin tranzaksiyani tasdiqlaysizmi👇</b>\n"
+"    "
+msgstr ""
+
+#: bot/handlers/callback_handlers.py:46
+msgid "✅Sizning so'rovingiz adminga yuborildi 24 soat gacha ko'rib chiqiladi😊"
+msgstr ""
+
+#: bot/handlers/callback_handlers.py:54
+msgid "Bekor qilindi❌"
+msgstr ""
+
+#: bot/handlers/callback_handlers.py:64
+msgid ""
+"\n"
+"Sizning sorovingiz qabul qilindi😊\n"
+"To'lovlaringizni to'lovlar tarixidan kuzatishingiz mumkin👇\n"
+"        "
+msgstr ""
+
+#: bot/handlers/callback_handlers.py:72
+msgid ""
+"\n"
+"Sizning sorovingiz qabul qilinmadi🥶❌\n"
+"To'lovlaringizni to'lovlar tarixidan kuzatishingiz mumkin👇\n"
+"                "
+msgstr ""
+
+#: bot/handlers/message_handler.py:38
+msgid "Xatolik yuz berdi Imageni yuklay olmadim: {error}"
+msgstr ""
+
+#: bot/handlers/message_handler.py:50
+msgid "Assalomu aleykum {}"
+msgstr ""
+
+#: bot/handlers/message_handler.py:57
+msgid ""
+"\n"
+"Telegram: {}\n"
+"    "
+msgstr ""
+
+#: bot/handlers/message_handler.py:66
+msgid "Sozlamalar bo'limiga xush kelibsiz👇"
+msgstr ""
+
+#: bot/handlers/message_handler.py:72
+msgid ""
+"\n"
+"<b>📉 So'ngi kurs:</b>\n"
+"\n"
+"💰1$ 👇<blockquote>{yuan}¥</blockquote>\n"
+"~-~-~-~-~-~-~-~-~-~-~-~-~-~-~\n"
+"💰1$ 👇<blockquote>{soum} UZS</blockquote>\n"
+"        "
+msgstr ""
+
+#: bot/handlers/message_handler.py:92
+msgid "Summani qaysi valyutada kiritasiz?"
+msgstr ""
+
+#: bot/handlers/message_handler.py:95
+msgid ""
+"\n"
+"<b>Iltimos oldin ismingizni kiriting\n"
+"Masalan:</b> <i>Abror</i>\n"
+"        "
+msgstr ""
+
+#: bot/handlers/message_handler.py:105
+msgid ""
+"\n"
+"<b>Telefon nomerni pastdagi tugma orqaliy jo'nating👇</b>\n"
+"        "
+msgstr ""
+
+#: bot/handlers/message_handler.py:116
+msgid "Davom ettirishingiz mumkin👇"
+msgstr ""
+
+#: bot/handlers/message_handler.py:123
+msgid "Summani yuanda kiriting"
+msgstr ""
+
+#: bot/handlers/message_handler.py:129 bot/handlers/message_handler.py:187
+msgid ""
+"\n"
+"<b>Tranzaksiya miqdori:</b>\n"
+"\n"
+"💰1$ 👇<blockquote>{yuan}¥</blockquote>\n"
+"~-~-~-~-~-~-~-~-~-~-~-~-~-~-~\n"
+"💰1$ 👇<blockquote>{soum} UZS</blockquote>\n"
+"\n"
+"~-~-~-~-~-~-~-~-~-~-~-~-~-~-~\n"
+"<b>📩Qabul qilasiz:</b> <blockquote>{taken_yuan}¥</blockquote>\n"
+"~-~-~-~-~-~-~-~-~-~-~-~-~-~-~\n"
+"<b>📤To'laysiz:</b> <blockquote>{payment_amount} UZS</blockquote>\n"
+"        "
+msgstr ""
+
+#: bot/handlers/message_handler.py:166
+msgid ""
+"\n"
+"<b>Iltimos yaroqliy qiymatni kiriting👇:</b>\n"
+"\n"
+"<b>📌Ko'rinishi masalan:</b> <blockquote>10 yoki 10.5</blockquote>\n"
+"\n"
+"<b>📉Minimal qiymat yuanda:</b> <blockquote>{min_yuan}¥</blockquote>\n"
+"                "
+msgstr ""
+
+#: bot/handlers/message_handler.py:181
+msgid "Summani so'mda kiriting"
+msgstr ""
+
+#: bot/handlers/message_handler.py:224
+msgid ""
+"\n"
+"<b>Iltimos yaroqliy qiymatni kiriting👇:</b>\n"
+"\n"
+"<b>📌Ko'rinishi masalan:</b> <blockquote>30000 yoki 50000</blockquote>\n"
+"\n"
+"<b>📉Minimal qiymat so'mda:</b> <blockquote>{min_som} USD</blockquote>\n"
+"                "
+msgstr ""
+
+#: bot/handlers/message_handler.py:238
+msgid ""
+"\n"
+"To'lov mablag'i: <b>{payment_amount} UZS</b>\n"
+"Kartalardan birini tanlang👇\n"
+"    "
+msgstr ""
+
+#: bot/handlers/message_handler.py:250
+msgid ""
+"\n"
+"<b>💰Mablag'</b>: {payment_amount}\n"
+"<b>To'lov uchun karta👇</b>\n"
+"<code>{card_number}</code>\n"
+"<blockquote>Palonchiyev Pistonchi1</blockquote>\n"
+"\n"
+"⚠❗️Diqqat to'lov qilganingizdan keyin chekni screenshotini yuboring🖼\n"
+"    "
+msgstr ""
+
+#: bot/handlers/message_handler.py:274
+msgid "AliPay summani olish uchun QR kodni rasmini yuboring"
+msgstr ""
+
+#: bot/handlers/message_handler.py:291
+msgid ""
+"\n"
+"<b>📈 Tranzaksiya raqami</b>: 🔢 {obj}\n"
+"\n"
+"~-~-~-~-~-~-~-~-~-~-~-~-~-~-~\n"
+"<b>📤To'laysiz:</b> <blockquote>{payment_amount} UZS</blockquote>\n"
+"\n"
+"<b>Barcha jarayonlar to'griligini tasdiqlang!</b>\n"
+"    "
+msgstr ""
+
+#: bot/handlers/message_handler.py:311
+msgid ""
+"\n"
+"<b>🔢 Tranzaksiya raqami: </b> {transaction_number}\n"
+"<b>Holati:</b> {transaction_status}\n"
+"<b>Yuan:</b> {amount_yuan}¥\n"
+"<b>UZS:</b> {amount_uzs} UZS\n"
+"<b>📆Sanasi:</b> {transaction_date}\n"
+"<b>⌛Vaqti:</b> {transaction_time}\n"
+"            "
+msgstr ""
+
+#: bot/handlers/message_handler.py:335
+msgid "Siz asosiy menyudasiz 👇 birini tanlang"
+msgstr ""
+
+#: bot/handlers/message_handler.py:342
+msgid "Tillardan birini tanlang👇"
+msgstr ""
+
