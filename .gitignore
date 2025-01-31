@@ -30,5 +30,6 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 .venv
 .env
+.idea
 locales/ru/LC_MESSAGES/messages.mo
 locales/uz/LC_MESSAGES/messages.mo
