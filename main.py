@@ -1,9 +1,11 @@
+import asyncio
 import json
 import logging
 import os
 import sys
 
 import asyncpg
+import uvicorn
 from aiogram import BaseMiddleware, Bot
 from aiogram import Dispatcher, F
 from aiogram.enums import ChatMemberStatus
@@ -26,6 +28,7 @@ from bot.handlers.message_handler import user_message_router
 from config import conf
 from db import database
 from utils import usd_uzs, usd_yuan
+from web import app
 
 load_dotenv('.env')
 
@@ -43,7 +46,7 @@ CARGO_DB_NAME = conf.bot.CARGO_DB_NAME
 ADMIN_LIST = conf.bot.ADMIN_LIST.strip().split()
 
 WEB_SERVER_HOST = "127.0.0.1"
-WEB_SERVER_PORT = 8088  # Changed from 80 to 8080
+WEB_SERVER_PORT = 8080  # Changed from 80 to 8080
 WEBHOOK_PATH = "/webhook"
 BASE_WEBHOOK_URL = "https://yuanbot.jaska-itishnik.uz"
 
@@ -117,11 +120,11 @@ async def handle_check_if_subscribed(callback_query: CallbackQuery):
     await callback_query.answer("Tekshirish bosildi ✅")
 
 
-# async def start_uvicorn():
-#     """Runs the Starlette Admin panel in a separate task."""
-#     config = uvicorn.Config(app, host="0.0.0.0", port=8080, log_level="info")
-#     server = uvicorn.Server(config)
-#     await server.serve()
+async def start_uvicorn():
+    """Runs the Starlette Admin panel in a separate task."""
+    config = uvicorn.Config(app, host="0.0.0.0", port=8080, log_level="info")
+    server = uvicorn.Server(config)
+    await server.serve()
 
 
 async def on_startup(bot: Bot):
@@ -151,7 +154,7 @@ async def on_startup(bot: Bot):
         logging.error(f"Failed to set webhook: {e}")
 
     # ✅ Start Uvicorn in the background
-    # asyncio.create_task(start_uvicorn())
+    asyncio.create_task(start_uvicorn())
 
 
 async def on_shutdown(bot: Bot):
