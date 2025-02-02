@@ -120,11 +120,11 @@ async def handle_check_if_subscribed(callback_query: CallbackQuery):
     await callback_query.answer("Tekshirish bosildi ✅")
 
 
-async def start_uvicorn():
-    """Runs the Starlette Admin panel in a separate task."""
-    config = uvicorn.Config(app, host="0.0.0.0", port=8080, log_level="info")
-    server = uvicorn.Server(config)
-    await server.serve()
+# async def start_uvicorn():
+#     """Runs the Starlette Admin panel in a separate task."""
+#     config = uvicorn.Config(app, host="0.0.0.0", port=8080, log_level="info")
+#     server = uvicorn.Server(config)
+#     await server.serve()
 
 
 async def on_startup(bot: Bot):
@@ -154,7 +154,7 @@ async def on_startup(bot: Bot):
         logging.error(f"Failed to set webhook: {e}")
 
     # ✅ Start Uvicorn in the background
-    asyncio.create_task(start_uvicorn())
+    # asyncio.create_task(start_uvicorn())
 
 
 async def on_shutdown(bot: Bot):
