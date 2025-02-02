@@ -47,7 +47,7 @@ CARGO_DB_NAME = conf.bot.CARGO_DB_NAME
 ADMIN_LIST = conf.bot.ADMIN_LIST.strip().split()
 
 WEB_SERVER_HOST = "127.0.0.1"
-WEB_SERVER_PORT = 8000  # Changed from 80 to 8080
+WEB_SERVER_PORT = 8088  # Changed from 80 to 8080
 WEBHOOK_PATH = "/webhook"
 BASE_WEBHOOK_URL = "https://yuanbot.jaska-itishnik.uz"
 
