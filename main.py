@@ -28,7 +28,7 @@ from bot.handlers.message_handler import user_message_router
 from config import conf
 from db import database
 from utils import usd_uzs, usd_yuan
-from web import app
+from web.app import app
 
 load_dotenv('.env')
 
