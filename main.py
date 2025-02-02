@@ -49,10 +49,9 @@ ADMIN_LIST = conf.bot.ADMIN_LIST.strip().split()
 WEB_SERVER_HOST = "127.0.0.1"
 WEB_SERVER_PORT = 8088  # Changed from 80 to 8080
 WEBHOOK_PATH = "/webhook"
-BASE_WEBHOOK_URL = "https://yuanbot.jaska-itishnik.uz"
+# BASE_WEBHOOK_URL = "https://yuanbot.jaska-itishnik.uz"
 
-
-# BASE_WEBHOOK_URL = "https://cc84-178-218-201-17.ngrok-free.app"
+BASE_WEBHOOK_URL = "https://692a-178-218-201-17.ngrok-free.app"
 
 
 async def check_old_bot_membership(tg_id: int) -> bool:
