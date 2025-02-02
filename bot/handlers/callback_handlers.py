@@ -51,6 +51,7 @@ async def confirm_transaction(callback: CallbackQuery, state: FSMContext):
                                               parse_mode=ParseMode.MARKDOWN_V2.HTML
                                               )
     else:
+        await transaction.delete(transaction.id)
         await callback.message.answer(text=_("Bekor qilindi❌"), reply_markup=main_menu_keyboard_buttons())
 
 

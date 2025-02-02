@@ -1,4 +1,4 @@
-#HI CI / CD
+#HI CI / CD .
 import json
 import logging
 import os
@@ -74,7 +74,7 @@ class JoinChannelMiddleware(BaseMiddleware):
             state: FSMContext = data['state']
             user_data = await state.get_data()
 
-            if "old_bot_member" not in user_data.keys():
+            if "old_bot_member" not in user_data.keys() or not user_data['old_bot_member']:
                 old_bot_member = await check_old_bot_membership(user.id)
                 await state.update_data(old_bot_member=old_bot_member)
             else:
@@ -86,7 +86,7 @@ class JoinChannelMiddleware(BaseMiddleware):
                 if member.status == ChatMemberStatus.LEFT:
                     unsubscribers.append(channel_id)
 
-            if unsubscribers or old_bot_member:
+            if unsubscribers or not old_bot_member:
                 ikb = InlineKeyboardBuilder()
                 for channel_id in unsubscribers:
                     channel = json.loads((await bot.get_chat(channel_id)).model_dump_json())
@@ -94,7 +94,7 @@ class JoinChannelMiddleware(BaseMiddleware):
                         text=channel['title'],
                         url=channel['invite_link']
                     ))
-                if old_bot_member:
+                if not old_bot_member:
                     ikb.add(InlineKeyboardButton(text="FagCargoBot",
                                                  url="https://t.me/FadCargoBot"))
                 ikb.add(InlineKeyboardButton(text=_("Tekshirish✅"), callback_data="check_if_subscribed"))
