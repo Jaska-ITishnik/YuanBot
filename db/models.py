@@ -15,16 +15,19 @@ class User(CreatedModel):
     phone: Mapped[str] = mapped_column(VARCHAR(255), nullable=True)
     transactions: Mapped[list['Transaction']] = relationship('Transaction', back_populates='user')
 
+    def __repr__(self):
+        return self.telegram_id
+
 
 class Transaction(CreatedModel):
     class ConvertType(Enum):
-        YUAN_TO_UZS = "Yuanni somga"
-        UZS_TO_YUAN = "Somni yuanga"
+        YUAN_TO_UZS = "Yuanni_somga"
+        UZS_TO_YUAN = "Somni_yuanga"
 
     class Status(Enum):
-        PENDING = '⏳Kutilmoqda'
-        COMPLETED = '✅Muvofaqiyatliy'
-        CANCELED = '❌Bekor qilingan'
+        PENDING = 'Kutilmoqda'
+        COMPLETED = 'Muvofaqiyatliy'
+        CANCELED = 'Bekor_qilingan'
 
     user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey(User.id, ondelete='CASCADE'))
     user: Mapped[list['User']] = relationship('User', back_populates='transactions')
