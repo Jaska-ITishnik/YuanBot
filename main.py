@@ -1,11 +1,9 @@
-import asyncio
 import json
 import logging
 import os
 import sys
 
 import asyncpg
-import uvicorn
 from aiogram import BaseMiddleware, Bot
 from aiogram import Dispatcher, F
 from aiogram.enums import ChatMemberStatus
@@ -28,7 +26,6 @@ from bot.handlers.message_handler import user_message_router
 from config import conf
 from db import database
 from utils import usd_uzs, usd_yuan
-from web.app import app
 
 load_dotenv('.env')
 
@@ -51,7 +48,7 @@ WEBHOOK_PATH = "/webhook"
 BASE_WEBHOOK_URL = "https://yuanbot.jaska-itishnik.uz"
 
 
-# BASE_WEBHOOK_URL = "https://cc84-178-218-201-17.ngrok-free.app"
+# BASE_WEBHOOK_URL = "https://f4a9-178-218-201-17.ngrok-free.app"
 
 
 async def check_old_bot_membership(tg_id: int) -> bool:
