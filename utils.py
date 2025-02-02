@@ -1,7 +1,9 @@
+import bcrypt
 import requests
 from bs4 import BeautifulSoup
 
 from bot.handlers.message_handler import database
+from config import conf
 
 
 def usd_uzs(n: float = 1):
@@ -41,3 +43,29 @@ def usd_yuan(n: float = 1):
 
 # usd_uzs()
 # usd_yuan()
+
+# print(bcrypt.gensalt())
+
+import bcrypt
+
+# password = b"Jasurbek_dev"  # Example password
+# stored_hash = conf.web.PASSWD.encode()  # Ensure the stored hash is in bytes
+
+# if bcrypt.checkpw(password, stored_hash):
+#     print("Password matches!")
+# else:
+#     print("Incorrect password.")
+
+import bcrypt
+
+password = "Jasurbek_dev"  # Your plain text password
+
+# Generate a salt and hash the password
+hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+
+# Convert the hash to a string to store in a database
+hashed_password_str = hashed_password.decode()
+
+# print("Hashed Password:", hashed_password_str)
+#
+# print(bcrypt.checkpw(password.encode(), hashed_password_str.encode()))
