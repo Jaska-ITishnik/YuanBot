@@ -94,21 +94,22 @@ async def catch_admin_messages_function(message: Message, state: FSMContext):
     location = message.location if message.location else None
 
     for user in users:
-        if video:
-            await message.bot.send_video(chat_id=user.telegram_id, video=video, caption=caption)
-        if picture:
-            await message.bot.send_photo(chat_id=user.telegram_id, photo=picture, caption=caption)
-        if voice:
-            await message.bot.send_voice(chat_id=user.telegram_id, voice=voice, caption=caption)
-        if file:
-            await message.bot.send_document(chat_id=user.telegram_id, document=file, caption=caption)
-        if node_video:
-            await message.bot.send_video_note(chat_id=user.telegram_id, video_note=node_video)
-        if location:
-            await message.bot.send_location(chat_id=user.telegram_id, latitude=location.latitude,
-                                            longitude=location.longitude)
-        if message.text:
-            await message.bot.send_message(chat_id=user.telegram_id, text=message.text)
+        if int(user.telegram_id) not in ADMIN_LIST:
+            if video:
+                await message.bot.send_video(chat_id=user.telegram_id, video=video, caption=caption)
+            if picture:
+                await message.bot.send_photo(chat_id=user.telegram_id, photo=picture, caption=caption)
+            if voice:
+                await message.bot.send_voice(chat_id=user.telegram_id, voice=voice, caption=caption)
+            if file:
+                await message.bot.send_document(chat_id=user.telegram_id, document=file, caption=caption)
+            if node_video:
+                await message.bot.send_video_note(chat_id=user.telegram_id, video_note=node_video)
+            if location:
+                await message.bot.send_location(chat_id=user.telegram_id, latitude=location.latitude,
+                                                longitude=location.longitude)
+            if message.text:
+                await message.bot.send_message(chat_id=user.telegram_id, text=message.text)
     await state.clear()
     await message.answer(text=_("Muvofaqiyatliy yuborildi davom etish ➡ <b>/start</b>"),
                          parse_mode=ParseMode.MARKDOWN_V2.HTML)
@@ -317,7 +318,7 @@ async def catch_humo_card(message: Message, state: FSMContext):
 <b>💰Mablag'</b>: {payment_amount}
 <b>To'lov uchun karta👇</b>
 <code>{card_number}</code>
-<blockquote>Palonchiyev Pistonchi1</blockquote>
+<blockquote>Axrorxoja Saidxodjayev</blockquote>
 
 ⚠❗️Diqqat to'lov qilganingizdan keyin chekni screenshotini yuboring🖼
     """)
