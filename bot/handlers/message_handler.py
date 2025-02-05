@@ -77,8 +77,8 @@ async def admin_catch_function(message: Message, state: FSMContext):
     await state.set_state(AdminSendMessage.admin_message)
 
 
-@user_message_router.message((F.text != '/start') & AdminSendMessage.admin_message, (IsAdmin(list(ADMIN_LIST))) and
-                             (F.content_type.in_([
+@user_message_router.message(AdminSendMessage.admin_message, (IsAdmin(list(ADMIN_LIST))) and
+                             (F.text != '/start') & (F.content_type.in_([
                                  ContentType.PHOTO, ContentType.TEXT,
                                  ContentType.VIDEO, ContentType.LOCATION,
                                  ContentType.DOCUMENT, ContentType.VOICE,
