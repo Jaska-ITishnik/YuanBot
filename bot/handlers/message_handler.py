@@ -12,7 +12,8 @@ from redis_dict import RedisDict
 
 from bot.button_functions import main_menu_keyboard_buttons, settings_submenu, change_lang_buttons, change_rate_submenu, \
     first_confirm_transaction, credit_cards, only_back, transaction_confirmation, phone_number
-from bot.states import FormGetAmountInYuan, FormGetAmountInUZS, FormPhotoState, UserInfoForm
+from bot.filters import IsAdmin
+from bot.states import FormGetAmountInYuan, FormGetAmountInUZS, FormPhotoState, UserInfoForm, AdminSendMessage
 from config import conf
 from custom_humanize_price import custom_humanize
 from db import User, Transaction
@@ -20,6 +21,7 @@ from db import User, Transaction
 database = RedisDict()
 user_message_router = Router()
 
+ADMIN_LIST = map(int, conf.bot.ADMIN_LIST.strip().split())
 BASE_DIR = Path(__file__).parent.parent.parent
 PHOTO_PATH_HUMO = os.path.join(BASE_DIR, "media", "cards", "humo.png")
 PHOTO_PATH_UZCARD = os.path.join(BASE_DIR, "media", "cards", "uzcard.jpeg")
@@ -42,13 +44,74 @@ async def save_photo_to_media(message, bot: Bot, state: FSMContext):
 @user_message_router.message(CommandStart())
 async def start_func(message: Message, state: FSMContext):
     data = await state.get_data()
+
     telegram_id = message.from_user.id
     username = message.from_user.username
     user = await User.get_by_telegram_id(telegram_id)
     if not user:
         await User.create(telegram_id=telegram_id, username=username)
     await message.answer(_("Assalomu aleykum {}").format(message.from_user.first_name),
-                         reply_markup=main_menu_keyboard_buttons(lang=data['locale']))
+                         reply_markup=main_menu_keyboard_buttons(message, lang=data['locale']))
+
+
+@user_message_router.message(IsAdmin(list(ADMIN_LIST)), F.text == __("📨Xabar yuborish"))
+async def admin_catch_function(message: Message, state: FSMContext):
+    msg_construction = _("""
+<b>Siz yuboraolasiz👇:</b>
+<blockquote>📺Video & 📤Habar</blockquote>
+
+<blockquote>🔗Har xil linklar</blockquote>
+
+<blockquote>📍Lokatsiyalar</blockquote>
+
+<blockquote>🖼Rasm & 📤Habar</blockquote>
+
+<blockquote>🎤Ovozliy xabarlar</blockquote>
+
+<blockquote>📂Fayllar & 📤Habar</blockquote>
+
+<b>Yuborishingiz mumkin✍️ 👇👇👇</b>
+    """)
+    await message.answer(_("Assalomu aleykum ADMIN🦸"))
+    await message.answer(text=msg_construction, parse_mode=ParseMode.MARKDOWN_V2.HTML)
+    await state.set_state(AdminSendMessage.admin_message)
+
+
+@user_message_router.message((F.text != '/start') & AdminSendMessage.admin_message, (IsAdmin(list(ADMIN_LIST))) and
+                             (F.content_type.in_([
+                                 ContentType.PHOTO, ContentType.TEXT,
+                                 ContentType.VIDEO, ContentType.LOCATION,
+                                 ContentType.DOCUMENT, ContentType.VOICE,
+                                 ContentType.VIDEO_NOTE])))
+async def catch_admin_messages_function(message: Message, state: FSMContext):
+    users = await User.get_all()
+    video = message.video.file_id if message.video else None
+    caption = message.caption if message.caption else ""
+    picture = message.photo[-1].file_id if message.photo else None  # Use the last photo for better quality
+    voice = message.voice.file_id if message.voice else None
+    file = message.document.file_id if message.document else None
+    node_video = message.video_note.file_id if message.video_note else None
+    location = message.location if message.location else None
+
+    for user in users:
+        if video:
+            await message.bot.send_video(chat_id=user.telegram_id, video=video, caption=caption)
+        if picture:
+            await message.bot.send_photo(chat_id=user.telegram_id, photo=picture, caption=caption)
+        if voice:
+            await message.bot.send_voice(chat_id=user.telegram_id, voice=voice, caption=caption)
+        if file:
+            await message.bot.send_document(chat_id=user.telegram_id, document=file, caption=caption)
+        if node_video:
+            await message.bot.send_video_note(chat_id=user.telegram_id, video_note=node_video)
+        if location:
+            await message.bot.send_location(chat_id=user.telegram_id, latitude=location.latitude,
+                                            longitude=location.longitude)
+        if message.text:
+            await message.bot.send_message(chat_id=user.telegram_id, text=message.text)
+    await state.clear()
+    await message.answer(text=_("Muvofaqiyatliy yuborildi davom etish ➡ <b>/start</b>"),
+                         parse_mode=ParseMode.MARKDOWN_V2.HTML)
 
 
 @user_message_router.message(F.text == __("🌐Ijtimoiy  tarmoqlarimiz"))
@@ -57,7 +120,8 @@ async def social_networks(message: Message, bot: Bot):
     text = _("""
 Telegram: {}
     """).format(conf.bot.TELEGRAM_USERNAME)
-    await message.answer(text=text, reply_to_message_id=message.message_id, reply_markup=main_menu_keyboard_buttons())
+    await message.answer(text=text, reply_to_message_id=message.message_id,
+                         reply_markup=main_menu_keyboard_buttons(message))
 
 
 @user_message_router.message(F.text == __("🛠Sozlamalar"))
@@ -80,7 +144,8 @@ async def get_rate(message: Message, bot: Bot, state: FSMContext):
     ).format(yuan=custom_humanize(str(database['usd_yuan'])), soum=custom_humanize(str(database['usd_uzs'])))
 
     await bot.delete_messages(chat_id=message.chat.id, message_ids=[message.message_id - 1])
-    await message.answer(text, ParseMode.MARKDOWN_V2.HTML, reply_markup=main_menu_keyboard_buttons(lang=data['locale']))
+    await message.answer(text, ParseMode.MARKDOWN_V2.HTML,
+                         reply_markup=main_menu_keyboard_buttons(message, lang=data['locale']))
 
 
 @user_message_router.message(F.text == __("💱Valyuta ayriboshlash(UZS-CNY)"))
@@ -113,7 +178,8 @@ async def catch_phone_number(message: Message, state: FSMContext):
     data = await state.get_data()
     user = await User.get_by_telegram_id(message.from_user.id)
     await user.update(user.id, first_name=data.get('first_name'), phone=data.get('phone_number'))
-    await message.answer(_("Davom ettirishingiz mumkin👇"), reply_markup=main_menu_keyboard_buttons(lang=data['locale']))
+    await message.answer(_("Davom ettirishingiz mumkin👇"),
+                         reply_markup=main_menu_keyboard_buttons(message, lang=data['locale']))
 
 
 @user_message_router.message(F.text == __("🇨🇳CNY"))
@@ -333,7 +399,7 @@ async def back_function(message: Message, bot: Bot, state: FSMContext):
     data = await state.get_data()
     await bot.delete_messages(chat_id=message.chat.id, message_ids=[message.message_id - 1])
     await message.answer(_("Siz asosiy menyudasiz 👇 birini tanlang"),
-                         reply_markup=main_menu_keyboard_buttons(lang=data['locale']))
+                         reply_markup=main_menu_keyboard_buttons(message, lang=data['locale']))
 
 
 @user_message_router.message(F.text == __("🇺🇿 ♻️ 🇷🇺 Tilni almashtirish"))

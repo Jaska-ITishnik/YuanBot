@@ -2,8 +2,12 @@ from aiogram.types import KeyboardButton
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+from config import conf
 
-def main_menu_keyboard_buttons(lang: str = None):
+ADMIN_LIST = list(map(int, conf.bot.ADMIN_LIST.strip().split()))
+
+
+def main_menu_keyboard_buttons(message, lang: str = None):
     btn = ReplyKeyboardBuilder()
     buttons = [
         KeyboardButton(text=_("💱Valyuta ayriboshlash(UZS-CNY)", locale=lang)),
@@ -12,9 +16,14 @@ def main_menu_keyboard_buttons(lang: str = None):
         KeyboardButton(text=_("💸Tranzaksiyalar tarixi", locale=lang)),
         KeyboardButton(text=_("🛠Sozlamalar", locale=lang))
     ]
-    btn.add(*buttons)
-    btn.adjust(1, 2, 2)
-    return btn.as_markup(resize_keyboard=True)
+    if message.from_user.id in ADMIN_LIST:
+        buttons.insert(0, KeyboardButton(text=_("📨Xabar yuborish"), locale=lang))
+        btn.add(*buttons)
+        btn.adjust(1, 2, repeat=True)
+    else:
+        btn.add(*buttons)
+        btn.adjust(1, 2, 2)
+    return btn.as_markup(resize_keyboard=True, one_time_keyboard=True)
 
 
 def settings_submenu():

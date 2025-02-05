@@ -17,7 +17,7 @@ async def change_lang_callback_func(callback: CallbackQuery, state: FSMContext):
     lang = callback.data.split('_')[-1]
     await state.set_data({'locale': lang})
     await callback.message.delete()
-    await callback.message.answer(_("Til tanlandi", locale=lang), reply_markup=main_menu_keyboard_buttons(lang))
+    await callback.message.answer(_("Til tanlandi", locale=lang), reply_markup=main_menu_keyboard_buttons(callback.message, lang))
 
 
 @user_callback_router.callback_query(F.data.startswith("confirm_transaction") | F.data.startswith("reject_transaction"))
@@ -52,7 +52,7 @@ async def confirm_transaction(callback: CallbackQuery, state: FSMContext):
                                               )
     else:
         await transaction.delete(transaction.id)
-        await callback.message.answer(text=_("Bekor qilindi❌"), reply_markup=main_menu_keyboard_buttons())
+        await callback.message.answer(text=_("Bekor qilindi❌"), reply_markup=main_menu_keyboard_buttons(callback.message))
 
 
 @user_callback_router.callback_query((F.data.startswith("admin_confirm_")) | (F.data.startswith("admin_reject_")))

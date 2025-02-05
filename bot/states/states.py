@@ -24,3 +24,7 @@ class FormPhotoState(StatesGroup):
 
 class FormGetCurrentClient(StatesGroup):
     current_client_telegram_id = State()
+
+
+class AdminSendMessage(StatesGroup):
+    admin_message = State()
