@@ -10,7 +10,7 @@ from starlette_admin import I18nConfig
 from starlette_admin.contrib.sqla import Admin, ModelView
 
 from config import conf
-from db import User, Transaction, database
+from db import User, Transaction, database, AdminCreditCard, AdminChannel
 from web.provider import UsernameAndPasswordProvider
 
 middleware = [
@@ -36,7 +36,7 @@ admin = Admin(
 
 
 class UserModelView(ModelView):
-    label = "Klientlar"
+    label = "🤵 Klientlar"
     # list_template = ''
 
     fields_default_sort = 'username', 'first_name', 'phone'
@@ -44,16 +44,29 @@ class UserModelView(ModelView):
     exclude_fields_from_edit = 'created_at', 'updated_at'
 
 
-
 class TransactionModelView(ModelView):
-    label = "Tranzaksiyalar"
+    label = "💰 Tranzaksiyalar"
     sortable_fields = "cny_amount", "uzs_amount"
+    exclude_fields_from_create = 'created_at', 'updated_at'
+    exclude_fields_from_edit = 'created_at', 'updated_at'
+
+
+class AdminCreditCardModelView(ModelView):
+    label = "💳 Admin Kartalari"
+    exclude_fields_from_create = 'created_at', 'updated_at'
+    exclude_fields_from_edit = 'created_at', 'updated_at'
+
+
+class AdminChannelModelView(ModelView):
+    label = "💬 Admin Kanallari"
     exclude_fields_from_create = 'created_at', 'updated_at'
     exclude_fields_from_edit = 'created_at', 'updated_at'
 
 
 admin.add_view(UserModelView(User))
 admin.add_view(TransactionModelView(Transaction))
+admin.add_view(AdminCreditCardModelView(AdminCreditCard))
+admin.add_view(AdminChannelModelView(AdminChannel))
 
 # Mount admin to your app
 admin.mount_to(app)

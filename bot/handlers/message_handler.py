@@ -16,12 +16,12 @@ from bot.filters import IsAdmin
 from bot.states import FormGetAmountInYuan, FormGetAmountInUZS, FormPhotoState, UserInfoForm, AdminSendMessage
 from config import conf
 from custom_humanize_price import custom_humanize
-from db import User, Transaction
+from db import User, Transaction, AdminCreditCard
 
 database = RedisDict()
 user_message_router = Router()
 
-ADMIN_LIST = map(int, conf.bot.ADMIN_LIST.strip().split())
+ADMIN_LIST = [int(id) for id in conf.bot.ADMIN_LIST.strip().split()]
 BASE_DIR = Path(__file__).parent.parent.parent
 PHOTO_PATH_HUMO = os.path.join(BASE_DIR, "media", "cards", "humo.png")
 PHOTO_PATH_UZCARD = os.path.join(BASE_DIR, "media", "cards", "uzcard.jpeg")
@@ -44,12 +44,11 @@ async def save_photo_to_media(message, bot: Bot, state: FSMContext):
 @user_message_router.message(CommandStart())
 async def start_func(message: Message, state: FSMContext):
     data = await state.get_data()
-
     telegram_id = message.from_user.id
     username = message.from_user.username
     user = await User.get_by_telegram_id(telegram_id)
     if not user:
-        await User.create(telegram_id=telegram_id, username=username)
+        await User.create(telegram_id=telegram_id, username=f"https://t.me/{username}")
     await message.answer(_("Assalomu aleykum {}").format(message.from_user.first_name),
                          reply_markup=main_menu_keyboard_buttons(message, lang=data['locale']))
 
@@ -79,10 +78,10 @@ async def admin_catch_function(message: Message, state: FSMContext):
 
 @user_message_router.message(AdminSendMessage.admin_message, (IsAdmin(list(ADMIN_LIST))) and
                              (F.text != '/start') & (F.content_type.in_([
-                                 ContentType.PHOTO, ContentType.TEXT,
-                                 ContentType.VIDEO, ContentType.LOCATION,
-                                 ContentType.DOCUMENT, ContentType.VOICE,
-                                 ContentType.VIDEO_NOTE])))
+    ContentType.PHOTO, ContentType.TEXT,
+    ContentType.VIDEO, ContentType.LOCATION,
+    ContentType.DOCUMENT, ContentType.VOICE,
+    ContentType.VIDEO_NOTE])))
 async def catch_admin_messages_function(message: Message, state: FSMContext):
     users = await User.get_all()
     video = message.video.file_id if message.video else None
@@ -94,7 +93,7 @@ async def catch_admin_messages_function(message: Message, state: FSMContext):
     location = message.location if message.location else None
 
     for user in users:
-        if int(user.telegram_id) not in ADMIN_LIST:
+        if int(user.telegram_id) not in list(ADMIN_LIST):
             if video:
                 await message.bot.send_video(chat_id=user.telegram_id, video=video, caption=caption)
             if picture:
@@ -207,7 +206,8 @@ async def catch_amount_func(message: Message, state: FSMContext):
 <b>📤To'laysiz:</b> <blockquote>{payment_amount} UZS</blockquote>
         """
     )
-    if message.text.isdigit() and (a := int(message.text)) >= conf.bot.MIN_AMOUNT_YUAN:
+    if message.text.isdigit():
+        a = int(message.text)
         payment_amount = round(database['usd_uzs'] / database['usd_yuan'] * a, 3)
         await state.update_data(uzs_amount=payment_amount)
         await state.update_data(cny_amount=int(message.text))
@@ -217,9 +217,9 @@ async def catch_amount_func(message: Message, state: FSMContext):
                            payment_amount=custom_humanize(str(payment_amount)))
         await message.answer(text=text, parse_mode=ParseMode.MARKDOWN_V2.HTML, reply_markup=first_confirm_transaction())
     else:
-        if len(message.text.split('.')) == 2 and (
-                a := int(message.text.split('.')[0]) + int(message.text.split('.')[1]) / int(
-                    f"10" * len(message.text.split('.')[1]))) >= conf.bot.MIN_AMOUNT_YUAN:
+        if len(message.text.split('.')) == 2:
+            a = int(message.text.split('.')[0]) + int(message.text.split('.')[1]) / int(
+                f"10" * len(message.text.split('.')[1]))
             payment_amount = round(database['usd_uzs'] / database['usd_yuan'] * a, 3)
             await state.update_data(uzs_amount=payment_amount)
             await state.update_data(cny_amount=a)
@@ -265,7 +265,8 @@ async def catch_amount_func(message: Message, state: FSMContext):
 <b>📤To'laysiz:</b> <blockquote>{payment_amount} UZS</blockquote>
         """
     )
-    if message.text.isdigit() and (a := int(message.text)) >= conf.bot.MIN_AMOUNT_UZS:
+    if message.text.isdigit():
+        a = int(message.text)
         taken_yuan = round(database['usd_yuan'] * a / database['usd_uzs'], 3)
         await state.update_data(uzs_amount=a)
         await state.update_data(cny_amount=taken_yuan)
@@ -275,9 +276,9 @@ async def catch_amount_func(message: Message, state: FSMContext):
                            payment_amount=custom_humanize(str(a)))
         await message.answer(text=text, parse_mode=ParseMode.MARKDOWN_V2.HTML, reply_markup=first_confirm_transaction())
     else:
-        if len(message.text.split('.')) == 2 and (
-                a := int(message.text.split('.')[0]) + int(message.text.split('.')[1]) / int(
-                    f"10" * len(message.text.split('.')[1]))) >= conf.bot.MIN_AMOUNT_UZS:
+        if len(message.text.split('.')) == 2:
+            a = int(message.text.split('.')[0]) + int(message.text.split('.')[1]) / int(
+                f"10" * len(message.text.split('.')[1]))
             taken_yuan = round(database['usd_yuan'] * a / database['usd_uzs'], 3)
             await state.update_data(uzs_amount=a)
             await state.update_data(cny_amount=taken_yuan)
@@ -311,6 +312,8 @@ Kartalardan birini tanlang👇
 
 @user_message_router.message((F.text == __("💳Humo")) | (F.text == __("🗃Uzcard")))
 async def catch_humo_card(message: Message, state: FSMContext):
+    ADMIN_HUMO_CARD = await AdminCreditCard.get_card_by_name(card_type=AdminCreditCard.CardType.HUMO)
+    ADMIN_UZCARD = await AdminCreditCard.get_card_by_name(card_type=AdminCreditCard.CardType.UZCARD)
     current_card_image = None
     data = await state.get_data()
     await state.set_state(FormPhotoState.screenshot)
@@ -318,17 +321,20 @@ async def catch_humo_card(message: Message, state: FSMContext):
 <b>💰Mablag'</b>: {payment_amount}
 <b>To'lov uchun karta👇</b>
 <code>{card_number}</code>
-<blockquote>Axrorxoja Saidxodjayev</blockquote>
+<blockquote>{card_owner}</blockquote>
 
 ⚠❗️Diqqat to'lov qilganingizdan keyin chekni screenshotini yuboring🖼
     """)
     if message.text == __("🗃Uzcard"):
         caption_text = caption_text.format(payment_amount=custom_humanize(str(data.get('uzs_amount'))),
-                                           card_number=conf.bot.ADMIN_UZCARD_CARD_NUMBER)
+                                           card_number=ADMIN_UZCARD.card_number,
+                                           card_owner=ADMIN_UZCARD.owner_first_last_name)
         current_card_image = PHOTO_PATH_UZCARD
     if message.text == __("💳Humo"):
         caption_text = caption_text.format(payment_amount=custom_humanize(str(data.get('uzs_amount'))),
-                                           card_number=conf.bot.ADMIN_HUMO_CARD_NUMBER)
+                                           card_number=ADMIN_HUMO_CARD.card_number,
+                                           card_owner=ADMIN_HUMO_CARD.owner_first_last_name
+                                           )
         current_card_image = PHOTO_PATH_HUMO
     await message.answer_photo(photo=FSInputFile(current_card_image), caption=caption_text,
                                parse_mode=ParseMode.MARKDOWN_V2.HTML, reply_markup=only_back())

@@ -25,7 +25,7 @@ from redis.asyncio import Redis
 from bot.handlers.callback_handlers import user_callback_router
 from bot.handlers.message_handler import user_message_router
 from config import conf
-from db import database
+from db import database, AdminChannel
 from utils import usd_uzs, usd_yuan
 
 load_dotenv('.env')
@@ -36,7 +36,6 @@ redis = Redis()
 storage = RedisStorage(redis=redis)
 dp = Dispatcher(storage=storage)
 
-CHAT_IDES_LIST = conf.bot.CHAT_IDES_LIST.strip().split()
 CARGO_DB_PASSWORD = conf.bot.CARGO_DB_PASSWORD
 CARGO_DB_HOST = conf.bot.CARGO_DB_HOST
 CARGO_DB_PORT = conf.bot.CARGO_DB_PORT
@@ -63,6 +62,7 @@ async def check_old_bot_membership(tg_id: int) -> bool:
 
 class JoinChannelMiddleware(BaseMiddleware):
     async def __call__(self, handler, event: Message, data):
+        CHAT_IDES_LIST = [int(channel.channel_id) for channel in await AdminChannel.get_all()]
         if event.callback_query and event.callback_query.data == 'check_if_subscribed' or event.message:
 
             if event.message:
@@ -89,7 +89,7 @@ class JoinChannelMiddleware(BaseMiddleware):
             if unsubscribers or not old_bot_member:
                 ikb = InlineKeyboardBuilder()
                 for channel_id in unsubscribers:
-                    channel = json.loads((await bot.get_chat(channel_id)).model_dump_json())
+                    channel = (await bot.get_chat(channel_id)).model_dump()
                     ikb.add(InlineKeyboardButton(
                         text=channel['title'],
                         url=channel['invite_link']
@@ -130,7 +130,8 @@ async def on_startup(bot: Bot):
         ]
         await bot.set_my_commands(commands=admin_commands, scope=BotCommandScopeChat(chat_id=int(ADMIN_CHAT_ID)))
 
-    await database.create_all()
+    # await database.create_all()
+    await database.drop_all()
 
     try:
         current_webhook = await bot.get_webhook_info()

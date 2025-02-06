@@ -1,8 +1,8 @@
 from enum import Enum
 
-from sqlalchemy import BigInteger, VARCHAR, ForeignKey
+from sqlalchemy import BigInteger, VARCHAR, ForeignKey, Column
 from sqlalchemy import Enum as SQLEnum
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship, declared_attr
 from sqlalchemy.testing.schema import mapped_column
 
 from db.base import CreatedModel
@@ -39,3 +39,39 @@ class Transaction(CreatedModel):
     uzs_course: Mapped[str] = mapped_column(VARCHAR, nullable=True)
     cny_amount: Mapped[str] = mapped_column(VARCHAR, nullable=True)
     uzs_amount: Mapped[str] = mapped_column(VARCHAR, nullable=True)
+
+
+class VerboseMixin:
+    @declared_attr
+    def verbose_names(cls):
+        return {}
+
+    @declared_attr
+    def _columns(cls):
+        cols = {}
+        for field, column in cls.__dict__.items():
+            if isinstance(column, Column) and field in cls.verbose_names:
+                column.info["verbose_name"] = cls.verbose_names[field]
+            cols[field] = column
+        return cols
+
+
+class AdminCreditCard(CreatedModel, VerboseMixin):
+    verbose_names = {
+        "card_number": "Karta raqami",
+        "owner_first_last_name": "To'liq ism familiyasi",
+        "card_type": "Karta turi",
+    }
+
+    class CardType(Enum):
+        HUMO = 'HUMO'
+        UZCARD = 'UZCARD'
+
+    card_number: Mapped[str] = mapped_column(VARCHAR)
+    owner_first_last_name: Mapped[str] = mapped_column(VARCHAR)
+    card_type: Mapped[CardType] = mapped_column(SQLEnum(CardType))
+
+
+class AdminChannel(CreatedModel):
+    channel_name: Mapped[str] = mapped_column(VARCHAR, nullable=True)
+    channel_id: Mapped[str] = mapped_column(VARCHAR)

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-02-01 00:04+0500\n"
+"POT-Creation-Date: 2025-02-06 14:24+0500\n"
 "PO-Revision-Date: 2025-01-29 11:19+0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -19,23 +19,23 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.16.0\n"
 
-#: main.py:82
+#: main.py:100
 msgid "Tekshirish✅"
 msgstr "Проверка✅"
 
-#: main.py:89
+#: main.py:106
 msgid "Hali a'zo bo'lmadingiz🤨"
 msgstr "Вы еще не являетесь участником🤨"
 
-#: main.py:91
+#: main.py:108
 msgid "Oldin kanallarga a'zo bo'ling👇"
 msgstr "Сначала подпишитесь на каналы👇"
 
-#: main.py:95
+#: main.py:112
 msgid "Muvofaqiyatliy☺ qayta /start ni bosing"
 msgstr "Успешно☺ Нажмите /start еще раз»."
 
-#: bot/bot_commands/commands.py:18
+#: bot/bot_commands/commands.py:18 main.py:129
 msgid "🛫Botni ishga tushirish"
 msgstr "🛫Запустите бота"
 
@@ -45,7 +45,7 @@ msgstr "🇺🇿УЗ"
 
 #: bot/button_functions/inline_buttons.py:10
 msgid "🇷🇺RU"
-msgstr ""
+msgstr "🇷🇺РУ"
 
 #: bot/button_functions/inline_buttons.py:19
 msgid "✅Tasdiqlaysizmi"
@@ -63,59 +63,63 @@ msgstr "✅ Да"
 msgid "❌Yo'q"
 msgstr "❌Нет"
 
-#: bot/button_functions/keyboard_buttons.py:9
+#: bot/button_functions/keyboard_buttons.py:13
 msgid "💱Valyuta ayriboshlash(UZS-CNY)"
 msgstr "💱Обмен валюты (UZS-CNY)"
 
-#: bot/button_functions/keyboard_buttons.py:10
+#: bot/button_functions/keyboard_buttons.py:14
 msgid "🔍Kursni bilish"
 msgstr "🔍Ознакомиться с курсом"
 
-#: bot/button_functions/keyboard_buttons.py:11
+#: bot/button_functions/keyboard_buttons.py:15
 msgid "🌐Ijtimoiy  tarmoqlarimiz"
 msgstr "🌐Наши социальные сети"
 
-#: bot/button_functions/keyboard_buttons.py:12
+#: bot/button_functions/keyboard_buttons.py:16
 msgid "💸Tranzaksiyalar tarixi"
 msgstr "💸История транзакций"
 
-#: bot/button_functions/keyboard_buttons.py:13
+#: bot/button_functions/keyboard_buttons.py:17
 msgid "🛠Sozlamalar"
 msgstr "🛠Настройки"
 
-#: bot/button_functions/keyboard_buttons.py:23
+#: bot/button_functions/keyboard_buttons.py:20
+msgid "📨Xabar yuborish"
+msgstr "📨Отправить сообщение"
+
+#: bot/button_functions/keyboard_buttons.py:32
 msgid "🇺🇿 ♻️ 🇷🇺 Tilni almashtirish"
 msgstr "🇺🇿 ♻️ 🇷🇺 Сменить язык"
 
-#: bot/button_functions/keyboard_buttons.py:24
-#: bot/button_functions/keyboard_buttons.py:36
-#: bot/button_functions/keyboard_buttons.py:47
-#: bot/button_functions/keyboard_buttons.py:59
+#: bot/button_functions/keyboard_buttons.py:33
+#: bot/button_functions/keyboard_buttons.py:45
+#: bot/button_functions/keyboard_buttons.py:56
 #: bot/button_functions/keyboard_buttons.py:68
+#: bot/button_functions/keyboard_buttons.py:77
 msgid "🔙Orqaga"
 msgstr "🔙Назад"
 
-#: bot/button_functions/keyboard_buttons.py:34
+#: bot/button_functions/keyboard_buttons.py:43
 msgid "🇨🇳CNY"
 msgstr "🇨🇳CNY"
 
-#: bot/button_functions/keyboard_buttons.py:35
+#: bot/button_functions/keyboard_buttons.py:44
 msgid "🇺🇿UZS"
 msgstr "🇺🇿UZS"
 
-#: bot/button_functions/keyboard_buttons.py:46
+#: bot/button_functions/keyboard_buttons.py:55
 msgid "✅Tasdiqlash"
 msgstr "✅Подтверждение"
 
-#: bot/button_functions/keyboard_buttons.py:57
+#: bot/button_functions/keyboard_buttons.py:66
 msgid "💳Humo"
 msgstr "💳Хумо"
 
-#: bot/button_functions/keyboard_buttons.py:58
+#: bot/button_functions/keyboard_buttons.py:67
 msgid "🗃Uzcard"
 msgstr "🗃Узкарта"
 
-#: bot/button_functions/keyboard_buttons.py:74
+#: bot/button_functions/keyboard_buttons.py:83
 msgid "📞Telefon"
 msgstr "📞Телефон"
 
@@ -153,11 +157,11 @@ msgstr ""
 "✅Ваш запрос отправлен администратору и будет рассмотрен в течение 24 "
 "часов😊"
 
-#: bot/handlers/callback_handlers.py:54
+#: bot/handlers/callback_handlers.py:55
 msgid "Bekor qilindi❌"
 msgstr "Отменено❌"
 
-#: bot/handlers/callback_handlers.py:64
+#: bot/handlers/callback_handlers.py:65
 msgid ""
 "\n"
 "Sizning sorovingiz qabul qilindi😊\n"
@@ -169,7 +173,7 @@ msgstr ""
 "Вы можете отслеживать свои платежи из истории платежей👇\n"
 " "
 
-#: bot/handlers/callback_handlers.py:72
+#: bot/handlers/callback_handlers.py:73
 msgid ""
 "\n"
 "Sizning sorovingiz qabul qilinmadi🥶❌\n"
@@ -181,15 +185,60 @@ msgstr ""
 "Вы можете отслеживать свои платежи из истории платежей👇\n"
 " "
 
-#: bot/handlers/message_handler.py:38
+#: bot/handlers/message_handler.py:40
 msgid "Xatolik yuz berdi Imageni yuklay olmadim: {error}"
 msgstr "Произошла ошибка. Не удалось загрузить изображение: {error}."
 
-#: bot/handlers/message_handler.py:50
+#: bot/handlers/message_handler.py:53
 msgid "Assalomu aleykum {}"
 msgstr "Привет {}"
 
-#: bot/handlers/message_handler.py:57
+#: bot/handlers/message_handler.py:59
+msgid ""
+"\n"
+"<b>Siz yuboraolasiz👇:</b>\n"
+"<blockquote>📺Video & 📤Habar</blockquote>\n"
+"\n"
+"<blockquote>🔗Har xil linklar</blockquote>\n"
+"\n"
+"<blockquote>📍Lokatsiyalar</blockquote>\n"
+"\n"
+"<blockquote>🖼Rasm & 📤Habar</blockquote>\n"
+"\n"
+"<blockquote>🎤Ovozliy xabarlar</blockquote>\n"
+"\n"
+"<blockquote>📂Fayllar & 📤Habar</blockquote>\n"
+"\n"
+"<b>Yuborishingiz mumkin✍️ 👇👇👇</b>\n"
+"    "
+msgstr ""
+"\n"
+"<b>Вы можете отправить👇:</b>\n"
+"<blockquote>📺Видео и 📤Сообщение</blockquote>\n"
+"\n"
+"<blockquote>🔗Разные ссылки</blockquote>\n"
+"\n"
+"<blockquote>📍Местоположения</blockquote>\n"
+"\n"
+"<blockquote>🖼Изображение и 📤Сообщение</blockquote>\n"
+"\n"
+"<blockquote>🎤Голосовые сообщения</blockquote>\n"
+"\n"
+"<blockquote>📂Файлы и 📤Сообщение</blockquote>\n"
+"\n"
+"<b>Вы можете отправить✍️ 👇👇👇</b>\n"
+" "
+
+#: bot/handlers/message_handler.py:75
+#, fuzzy
+msgid "Assalomu aleykum ADMIN🦸"
+msgstr "Привет {}"
+
+#: bot/handlers/message_handler.py:114
+msgid "Muvofaqiyatliy yuborildi davom etish ➡ <b>/start</b>"
+msgstr "Отправлено успешно. Продолжить ➡ <b>/start</b>"
+
+#: bot/handlers/message_handler.py:121
 msgid ""
 "\n"
 "Telegram: {}\n"
@@ -199,11 +248,11 @@ msgstr ""
 "Телеграм: {}\n"
 " "
 
-#: bot/handlers/message_handler.py:66
+#: bot/handlers/message_handler.py:131
 msgid "Sozlamalar bo'limiga xush kelibsiz👇"
 msgstr "Добро пожаловать в раздел настроек👇"
 
-#: bot/handlers/message_handler.py:72
+#: bot/handlers/message_handler.py:137
 msgid ""
 "\n"
 "<b>📉 So'ngi kurs:</b>\n"
@@ -221,11 +270,11 @@ msgstr ""
 "💰1$ 👇<blockquote>{soum} сум</blockquote>\n"
 " "
 
-#: bot/handlers/message_handler.py:92
+#: bot/handlers/message_handler.py:158
 msgid "Summani qaysi valyutada kiritasiz?"
 msgstr "В какой валюте вы вводите сумму?"
 
-#: bot/handlers/message_handler.py:95
+#: bot/handlers/message_handler.py:161
 msgid ""
 "\n"
 "<b>Iltimos oldin ismingizni kiriting\n"
@@ -237,7 +286,7 @@ msgstr ""
 "Например:</b> <i>Репутация</i>\n"
 " "
 
-#: bot/handlers/message_handler.py:105
+#: bot/handlers/message_handler.py:171
 msgid ""
 "\n"
 "<b>Telefon nomerni pastdagi tugma orqaliy jo'nating👇</b>\n"
@@ -247,15 +296,15 @@ msgstr ""
 "<b>Отправьте номер телефона, используя кнопку ниже👇</b>\n"
 " "
 
-#: bot/handlers/message_handler.py:116
+#: bot/handlers/message_handler.py:182
 msgid "Davom ettirishingiz mumkin👇"
 msgstr "Вы можете продолжить👇"
 
-#: bot/handlers/message_handler.py:123
+#: bot/handlers/message_handler.py:190
 msgid "Summani yuanda kiriting"
 msgstr "Введите сумму в юанях"
 
-#: bot/handlers/message_handler.py:129 bot/handlers/message_handler.py:187
+#: bot/handlers/message_handler.py:196 bot/handlers/message_handler.py:254
 msgid ""
 "\n"
 "<b>Tranzaksiya miqdori:</b>\n"
@@ -283,7 +332,7 @@ msgstr ""
 "<b>📤Вы заплатите:</b> <blockquote>{payment_amount} сум</blockquote>\n"
 " "
 
-#: bot/handlers/message_handler.py:166
+#: bot/handlers/message_handler.py:233
 msgid ""
 "\n"
 "<b>Iltimos yaroqliy qiymatni kiriting👇:</b>\n"
@@ -302,11 +351,11 @@ msgstr ""
 "<blockquote>{min_yuan}¥</blockquote>\n"
 " "
 
-#: bot/handlers/message_handler.py:181
+#: bot/handlers/message_handler.py:248
 msgid "Summani so'mda kiriting"
 msgstr "Введите сумму в сумах"
 
-#: bot/handlers/message_handler.py:224
+#: bot/handlers/message_handler.py:291
 msgid ""
 "\n"
 "<b>Iltimos yaroqliy qiymatni kiriting👇:</b>\n"
@@ -325,7 +374,7 @@ msgstr ""
 "USD</blockquote>\n"
 " "
 
-#: bot/handlers/message_handler.py:238
+#: bot/handlers/message_handler.py:305
 msgid ""
 "\n"
 "To'lov mablag'i: <b>{payment_amount} UZS</b>\n"
@@ -337,13 +386,14 @@ msgstr ""
 "Выберите одну из карточек👇\n"
 " "
 
-#: bot/handlers/message_handler.py:250
+#: bot/handlers/message_handler.py:317
+#, fuzzy
 msgid ""
 "\n"
 "<b>💰Mablag'</b>: {payment_amount}\n"
 "<b>To'lov uchun karta👇</b>\n"
 "<code>{card_number}</code>\n"
-"<blockquote>Palonchiyev Pistonchi1</blockquote>\n"
+"<blockquote>Axrorxoja Saidxodjayev</blockquote>\n"
 "\n"
 "⚠❗️Diqqat to'lov qilganingizdan keyin chekni screenshotini yuboring🖼\n"
 "    "
@@ -357,11 +407,11 @@ msgstr ""
 "⚠❗️Пожалуйста, пришлите скриншот квитанции после оплаты🖼\n"
 " "
 
-#: bot/handlers/message_handler.py:274
+#: bot/handlers/message_handler.py:341
 msgid "AliPay summani olish uchun QR kodni rasmini yuboring"
 msgstr "Отправьте изображение QR-кода, чтобы получить сумму AliPay."
 
-#: bot/handlers/message_handler.py:291
+#: bot/handlers/message_handler.py:358
 msgid ""
 "\n"
 "<b>📈 Tranzaksiya raqami</b>: 🔢 {obj}\n"
@@ -381,7 +431,7 @@ msgstr ""
 "<b>Проверьте правильность всех процессов!</b>\n"
 " "
 
-#: bot/handlers/message_handler.py:311
+#: bot/handlers/message_handler.py:378
 msgid ""
 "\n"
 "<b>🔢 Tranzaksiya raqami: </b> {transaction_number}\n"
@@ -401,11 +451,11 @@ msgstr ""
 "<b>⌛Время:</b> {transaction_time}\n"
 " "
 
-#: bot/handlers/message_handler.py:335
+#: bot/handlers/message_handler.py:402
 msgid "Siz asosiy menyudasiz 👇 birini tanlang"
 msgstr "Вы находитесь в главном меню 👇 выберите одного"
 
-#: bot/handlers/message_handler.py:342
+#: bot/handlers/message_handler.py:409
 msgid "Tillardan birini tanlang👇"
 msgstr "Выберите один из языков👇"
 

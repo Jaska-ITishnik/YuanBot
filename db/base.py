@@ -83,6 +83,11 @@ class AbstractClass:
         return (await db.execute(query)).scalar()
 
     @classmethod
+    async def get_card_by_name(cls, card_type):
+        query = select(cls).where(cls.card_type == card_type)
+        return (await db.execute(query)).scalar()
+
+    @classmethod
     async def get_transactions_by_user(cls, user_id):
         query = select(cls).where(cls.user_id == user_id)
         return (await db.execute(query)).scalars()
