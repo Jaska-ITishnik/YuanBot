@@ -65,6 +65,7 @@ def credit_cards():
     buttons = [
         KeyboardButton(text=_("💳Humo")),
         KeyboardButton(text=_("🗃Uzcard")),
+        KeyboardButton(text=_("💳Visa")),
         KeyboardButton(text=_("🔙Orqaga"))
     ]
     btn.add(*buttons)

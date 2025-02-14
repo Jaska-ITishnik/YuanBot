@@ -66,6 +66,7 @@ class AdminCreditCard(CreatedModel, VerboseMixin):
     class CardType(Enum):
         HUMO = 'HUMO'
         UZCARD = 'UZCARD'
+        VISA = 'VISA'
 
     card_number: Mapped[str] = mapped_column(VARCHAR)
     owner_first_last_name: Mapped[str] = mapped_column(VARCHAR)
@@ -75,3 +76,8 @@ class AdminCreditCard(CreatedModel, VerboseMixin):
 class AdminChannel(CreatedModel):
     channel_name: Mapped[str] = mapped_column(VARCHAR, nullable=True)
     channel_id: Mapped[str] = mapped_column(VARCHAR)
+
+
+class AdditionAmountForCourse(CreatedModel):
+    yuan_ga: Mapped[str] = mapped_column(VARCHAR)
+    som_ga: Mapped[str] = mapped_column(VARCHAR)

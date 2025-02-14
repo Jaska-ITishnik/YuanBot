@@ -11,6 +11,7 @@ from starlette_admin.contrib.sqla import Admin, ModelView
 
 from config import conf
 from db import User, Transaction, database, AdminCreditCard, AdminChannel
+from db.models import AdditionAmountForCourse
 from web.provider import UsernameAndPasswordProvider
 
 middleware = [
@@ -63,10 +64,17 @@ class AdminChannelModelView(ModelView):
     exclude_fields_from_edit = 'created_at', 'updated_at'
 
 
+class AdditionAmountForCourseModelView(ModelView):
+    label = "💸 Kursga qo'shimcha"
+    exclude_fields_from_create = 'created_at', 'updated_at'
+    exclude_fields_from_edit = 'created_at', 'updated_at'
+
+
 admin.add_view(UserModelView(User))
 admin.add_view(TransactionModelView(Transaction))
 admin.add_view(AdminCreditCardModelView(AdminCreditCard))
 admin.add_view(AdminChannelModelView(AdminChannel))
+admin.add_view(AdditionAmountForCourseModelView(AdditionAmountForCourse))
 
 # Mount admin to your app
 admin.mount_to(app)
