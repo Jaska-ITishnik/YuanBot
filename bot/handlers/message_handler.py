@@ -17,6 +17,7 @@ from bot.states import FormGetAmountInYuan, FormGetAmountInUZS, FormPhotoState, 
 from config import conf
 from custom_humanize_price import custom_humanize
 from db import User, Transaction, AdminCreditCard
+from db.models import AdditionAmountForCourse
 
 database = RedisDict()
 user_message_router = Router()
@@ -25,6 +26,7 @@ ADMIN_LIST = [int(id) for id in conf.bot.ADMIN_LIST.strip().split()]
 BASE_DIR = Path(__file__).parent.parent.parent
 PHOTO_PATH_HUMO = os.path.join(BASE_DIR, "media", "cards", "humo.png")
 PHOTO_PATH_UZCARD = os.path.join(BASE_DIR, "media", "cards", "uzcard.jpeg")
+PHOTO_PATH_VISA = os.path.join(BASE_DIR, "media", "cards", "visa.jpg")
 MEDIA_DIRECTORY = os.path.join(BASE_DIR, 'media')
 random_str = random_string(length=6)
 
@@ -132,6 +134,7 @@ async def settings_function(message: Message, bot: Bot):
 
 @user_message_router.message(F.text == __("🔍Kursni bilish"))
 async def get_rate(message: Message, bot: Bot, state: FSMContext):
+    addition_amount = await AdditionAmountForCourse.get(id_=1)
     data = await state.get_data()
     text = _(
         """
@@ -141,7 +144,8 @@ async def get_rate(message: Message, bot: Bot, state: FSMContext):
 ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 💰1$ 👇<blockquote>{soum} UZS</blockquote>
         """
-    ).format(yuan=custom_humanize(str(database['usd_yuan'])), soum=custom_humanize(str(database['usd_uzs'])))
+    ).format(yuan=custom_humanize(str(database['usd_yuan'] - float(float(addition_amount.yuan_ga)))),
+             soum=custom_humanize(str(database['usd_uzs'] + float(addition_amount.som_ga))))
 
     await bot.delete_messages(chat_id=message.chat.id, message_ids=[message.message_id - 1])
     await message.answer(text, ParseMode.MARKDOWN_V2.HTML,
@@ -189,9 +193,10 @@ async def type_rate_function(message: Message, state: FSMContext, bot: Bot):
     await message.answer(text=_("Summani yuanda kiriting"))
 
 
-@user_message_router.message(FormGetAmountInYuan.cny_amount, F.text != __("🔙Orqaga"), F.text != __("✅Tasdiqlash"),
-                             F.text != __("🇺🇿UZS"), F.text != __("💳Humo"), F.text != __("🗃Uzcard"))
+@user_message_router.message(FormGetAmountInYuan.cny_amount,
+                             F.text.func(lambda text: text.replace('.', '', 1).isdigit()))
 async def catch_amount_func(message: Message, state: FSMContext):
+    addition_amount = await AdditionAmountForCourse.get(id_=1)
     text = _(
         """
 <b>Tranzaksiya miqdori:</b>
@@ -203,30 +208,44 @@ async def catch_amount_func(message: Message, state: FSMContext):
 ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 <b>📩Qabul qilasiz:</b> <blockquote>{taken_yuan}¥</blockquote>
 ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-<b>📤To'laysiz:</b> <blockquote>{payment_amount} UZS</blockquote>
+<b>📤To'laysiz:</b>
+ 
+<b>🇺🇿So'mda:</b><blockquote>{payment_amount} UZS</blockquote>
+
+<b>💲Dollarda:</b><blockquote>{payment_amount_in_dollar}$</blockquote>
         """
     )
     if message.text.isdigit():
         a = int(message.text)
-        payment_amount = round(database['usd_uzs'] / database['usd_yuan'] * a, 3)
+        payment_amount = round(
+            (database['usd_uzs'] + float(addition_amount.som_ga)) / (
+                    database['usd_yuan'] - float(addition_amount.yuan_ga)) * a, 3)
         await state.update_data(uzs_amount=payment_amount)
         await state.update_data(cny_amount=int(message.text))
         text = text.format(taken_yuan=custom_humanize(str(a)),
-                           yuan=custom_humanize(str(database['usd_yuan'])),
-                           soum=custom_humanize(str(database['usd_uzs'])),
-                           payment_amount=custom_humanize(str(payment_amount)))
+                           yuan=custom_humanize(str(database['usd_yuan'] - float(addition_amount.yuan_ga))),
+                           soum=custom_humanize(str(database['usd_uzs'] + float(addition_amount.som_ga))),
+                           payment_amount=custom_humanize(str(payment_amount)),
+                           payment_amount_in_dollar=custom_humanize(
+                               str(round(payment_amount / (database['usd_uzs'] + float(addition_amount.som_ga)),
+                                         1))))
         await message.answer(text=text, parse_mode=ParseMode.MARKDOWN_V2.HTML, reply_markup=first_confirm_transaction())
     else:
         if len(message.text.split('.')) == 2:
             a = int(message.text.split('.')[0]) + int(message.text.split('.')[1]) / int(
                 f"10" * len(message.text.split('.')[1]))
-            payment_amount = round(database['usd_uzs'] / database['usd_yuan'] * a, 3)
+            payment_amount = round(
+                database['usd_uzs'] + float(addition_amount.som_ga) / (
+                        database['usd_yuan'] - float(addition_amount.yuan_ga)) * a, 3)
             await state.update_data(uzs_amount=payment_amount)
             await state.update_data(cny_amount=a)
             text = text.format(taken_yuan=custom_humanize(str(a)),
-                               yuan=custom_humanize(str(database['usd_yuan'])),
-                               soum=custom_humanize(str(database['usd_uzs'])),
-                               payment_amount=custom_humanize(str(payment_amount)))
+                               yuan=custom_humanize(str(database['usd_yuan'] - float(addition_amount.yuan_ga))),
+                               soum=custom_humanize(str(database['usd_uzs'] + float(addition_amount.som_ga))),
+                               payment_amount=custom_humanize(str(payment_amount)),
+                               payment_amount_in_dollar=custom_humanize(
+                                   str(round(payment_amount / (database['usd_uzs'] + float(addition_amount.som_ga)),
+                                             2))))
             await message.answer(text=text, parse_mode=ParseMode.MARKDOWN_V2.HTML,
                                  reply_markup=first_confirm_transaction())
         else:
@@ -248,9 +267,10 @@ async def type_rate_function(message: Message, state: FSMContext, bot: Bot):
     await message.answer(text=_("Summani so'mda kiriting"))
 
 
-@user_message_router.message(FormGetAmountInUZS.uzs_amount, F.text != __("🔙Orqaga"), F.text != __("✅Tasdiqlash"),
-                             F.text != __("🇺🇿UZS"), F.text != __("💳Humo"), F.text != __("🗃Uzcard"))
+@user_message_router.message(FormGetAmountInUZS.uzs_amount,
+                             F.text.func(lambda text: text.replace('.', '', 1).isdigit()))
 async def catch_amount_func(message: Message, state: FSMContext):
+    addition_amount = await AdditionAmountForCourse.get(id_=1)
     text = _(
         """
 <b>Tranzaksiya miqdori:</b>
@@ -262,30 +282,44 @@ async def catch_amount_func(message: Message, state: FSMContext):
 ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 <b>📩Qabul qilasiz:</b> <blockquote>{taken_yuan}¥</blockquote>
 ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
-<b>📤To'laysiz:</b> <blockquote>{payment_amount} UZS</blockquote>
+<b>📤To'laysiz:</b> 
+
+<b>🇺🇿So'mda:</b><blockquote>{payment_amount} UZS</blockquote>
+
+<b>💲Dollarda:</b><blockquote>{payment_amount_in_dollar}$</blockquote>
         """
     )
     if message.text.isdigit():
         a = int(message.text)
-        taken_yuan = round(database['usd_yuan'] * a / database['usd_uzs'], 3)
+        taken_yuan = round(
+            (database['usd_yuan'] - float(addition_amount.yuan_ga)) * a / (
+                    database['usd_uzs'] + float(addition_amount.som_ga)), 3)
         await state.update_data(uzs_amount=a)
         await state.update_data(cny_amount=taken_yuan)
         text = text.format(taken_yuan=custom_humanize(str(taken_yuan)),
-                           yuan=custom_humanize(str(database['usd_yuan'])),
-                           soum=custom_humanize(str(database['usd_uzs'])),
-                           payment_amount=custom_humanize(str(a)))
+                           yuan=custom_humanize(str(database['usd_yuan'] - float(addition_amount.yuan_ga))),
+                           soum=custom_humanize(str(database['usd_uzs'] + float(addition_amount.som_ga))),
+                           payment_amount=custom_humanize(str(a)),
+                           payment_amount_in_dollar=custom_humanize(
+                               str(round(a / (database['usd_uzs'] + float(addition_amount.som_ga)), 1))))
         await message.answer(text=text, parse_mode=ParseMode.MARKDOWN_V2.HTML, reply_markup=first_confirm_transaction())
     else:
         if len(message.text.split('.')) == 2:
             a = int(message.text.split('.')[0]) + int(message.text.split('.')[1]) / int(
                 f"10" * len(message.text.split('.')[1]))
-            taken_yuan = round(database['usd_yuan'] * a / database['usd_uzs'], 3)
+            taken_yuan = round(
+                (database['usd_yuan'] - float(addition_amount.yuan_ga)) * a / (
+                        database['usd_uzs'] + float(addition_amount.som_ga)),
+                3)
             await state.update_data(uzs_amount=a)
             await state.update_data(cny_amount=taken_yuan)
             text = text.format(taken_yuan=custom_humanize(str(taken_yuan)),
-                               yuan=custom_humanize(str(database['usd_yuan'])),
-                               soum=custom_humanize(str(database['usd_uzs'])),
-                               payment_amount=custom_humanize(str(a)))
+                               yuan=custom_humanize(str(database['usd_yuan'] - float(addition_amount.yuan_ga))),
+                               soum=custom_humanize(str(database['usd_uzs'] + float(addition_amount.som_ga))),
+                               payment_amount=custom_humanize(str(a)),
+                               payment_amount_in_dollar=custom_humanize(
+                                   str(round(a / (database['usd_uzs'] + float(addition_amount.som_ga)), 1)))
+                               )
             await message.answer(text=text, parse_mode=ParseMode.MARKDOWN_V2.HTML,
                                  reply_markup=first_confirm_transaction())
         else:
@@ -302,18 +336,26 @@ async def catch_amount_func(message: Message, state: FSMContext):
 
 @user_message_router.message(F.text == __("✅Tasdiqlash"))
 async def confirm_function(message: Message, state: FSMContext):
+    addition_amount = await AdditionAmountForCourse.get(id_=1)
     data = await state.get_data()
     text = _("""
-To'lov mablag'i: <b>{payment_amount} UZS</b>
+To'lov mablag'i: <blockquote>{payment_amount} UZS</blockquote>
+~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
+Yoki:<blockquote>{payment_amount_in_dollar}$</blockquote>
+
 Kartalardan birini tanlang👇
-    """).format(payment_amount=custom_humanize(str(data.get('uzs_amount'))))
+    """).format(payment_amount=custom_humanize(str(data.get('uzs_amount'))),
+                payment_amount_in_dollar=custom_humanize(
+                    str(round(data.get('uzs_amount') / (database['usd_uzs'] + float(addition_amount.som_ga)), 1))))
     await message.answer(text=text, parse_mode=ParseMode.MARKDOWN_V2.HTML, reply_markup=credit_cards())
 
 
-@user_message_router.message((F.text == __("💳Humo")) | (F.text == __("🗃Uzcard")))
+@user_message_router.message((F.text == __("💳Humo")) | (F.text == __("🗃Uzcard")) | (F.text == __("💳Visa")))
 async def catch_humo_card(message: Message, state: FSMContext):
+    addition_amount = await AdditionAmountForCourse.get(id_=1)
     ADMIN_HUMO_CARD = await AdminCreditCard.get_card_by_name(card_type=AdminCreditCard.CardType.HUMO)
     ADMIN_UZCARD = await AdminCreditCard.get_card_by_name(card_type=AdminCreditCard.CardType.UZCARD)
+    ADMIN_VISA = await AdminCreditCard.get_card_by_name(card_type=AdminCreditCard.CardType.VISA)
     current_card_image = None
     data = await state.get_data()
     await state.set_state(FormPhotoState.screenshot)
@@ -325,17 +367,24 @@ async def catch_humo_card(message: Message, state: FSMContext):
 
 ⚠❗️Diqqat to'lov qilganingizdan keyin chekni screenshotini yuboring🖼
     """)
-    if message.text == __("🗃Uzcard"):
+    if message.text == __("🗃Uzcard") and ADMIN_UZCARD:
         caption_text = caption_text.format(payment_amount=custom_humanize(str(data.get('uzs_amount'))),
                                            card_number=ADMIN_UZCARD.card_number,
                                            card_owner=ADMIN_UZCARD.owner_first_last_name)
         current_card_image = PHOTO_PATH_UZCARD
-    if message.text == __("💳Humo"):
+    elif message.text == __("💳Humo") and ADMIN_HUMO_CARD:
         caption_text = caption_text.format(payment_amount=custom_humanize(str(data.get('uzs_amount'))),
                                            card_number=ADMIN_HUMO_CARD.card_number,
                                            card_owner=ADMIN_HUMO_CARD.owner_first_last_name
                                            )
         current_card_image = PHOTO_PATH_HUMO
+    elif message.text == __("💳Visa") and ADMIN_VISA:
+        caption_text = caption_text.format(payment_amount=f"{custom_humanize(
+            str(round(data.get('uzs_amount') / (database['usd_uzs'] + float(addition_amount.som_ga)), 1)))}$",
+                                           card_number=ADMIN_VISA.card_number,
+                                           card_owner=ADMIN_VISA.owner_first_last_name
+                                           )
+        current_card_image = PHOTO_PATH_VISA
     await message.answer_photo(photo=FSInputFile(current_card_image), caption=caption_text,
                                parse_mode=ParseMode.MARKDOWN_V2.HTML, reply_markup=only_back())
 
@@ -349,6 +398,7 @@ async def take_screenshot(message: Message, state: FSMContext, bot: Bot):
 
 @user_message_router.message(FormPhotoState.alipay_photo, F.content_type == ContentType.PHOTO)
 async def take_alipyqr(message: Message, bot: Bot, state: FSMContext):
+    additional_amount = await AdditionAmountForCourse.get(id_=1)
     await state.update_data(alipay_photo=(await save_photo_to_media(message, bot, state)))
     data = await state.get_data()
     user = await User.get_by_telegram_id(message.from_user.id)
@@ -356,8 +406,8 @@ async def take_alipyqr(message: Message, bot: Bot, state: FSMContext):
         user_id=user.id,
         check_image=data.get('screenshot'),
         card_image=data.get('alipay_photo'),
-        cny_course=custom_humanize(str(database['usd_yuan'])),
-        uzs_course=custom_humanize(str(database['usd_uzs'])),
+        cny_course=custom_humanize(str(database['usd_yuan'] - float(additional_amount.yuan_ga))),
+        uzs_course=custom_humanize(str(database['usd_uzs'] + float(additional_amount.som_ga))),
         cny_amount=custom_humanize(str(data.get('cny_amount'))),
         uzs_amount=custom_humanize(str(data.get('uzs_amount')))
     )
