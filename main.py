@@ -131,7 +131,7 @@ async def on_startup(bot: Bot):
         await bot.set_my_commands(commands=admin_commands, scope=BotCommandScopeChat(chat_id=int(ADMIN_CHAT_ID)))
 
     # await database.create_all()
-    # await database.drop_all()
+    await database.drop_all()
 
     try:
         current_webhook = await bot.get_webhook_info()

@@ -81,3 +81,6 @@ class AdminChannel(CreatedModel):
 class AdditionAmountForCourse(CreatedModel):
     yuan_ga: Mapped[str] = mapped_column(VARCHAR)
     som_ga: Mapped[str] = mapped_column(VARCHAR)
+    yuan: Mapped[str] = mapped_column(VARCHAR, nullable=True)
+    som: Mapped[str] = mapped_column(VARCHAR, nullable=True)
+

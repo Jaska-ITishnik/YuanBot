@@ -144,8 +144,8 @@ async def get_rate(message: Message, bot: Bot, state: FSMContext):
 ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 💰1$ 👇<blockquote>{soum} UZS</blockquote>
         """
-    ).format(yuan=custom_humanize(str(database['usd_yuan'] - float(float(addition_amount.yuan_ga)))),
-             soum=custom_humanize(str(database['usd_uzs'] + float(addition_amount.som_ga))))
+    ).format(yuan=custom_humanize(str(round(database['usd_yuan'] - float(float(addition_amount.yuan_ga)), 2))),
+             soum=custom_humanize(str(round(database['usd_uzs'] + float(addition_amount.som_ga), 2))))
 
     await bot.delete_messages(chat_id=message.chat.id, message_ids=[message.message_id - 1])
     await message.answer(text, ParseMode.MARKDOWN_V2.HTML,
