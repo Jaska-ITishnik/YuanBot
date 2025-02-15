@@ -3,6 +3,7 @@ from aiogram.enums import ParseMode
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, FSInputFile
 from aiogram.utils.i18n import gettext as _
+from aiogram.utils.media_group import MediaGroupBuilder
 
 from bot.button_functions import main_menu_keyboard_buttons, admin_transaction_confirmation
 from config import conf
@@ -17,7 +18,8 @@ async def change_lang_callback_func(callback: CallbackQuery, state: FSMContext):
     lang = callback.data.split('_')[-1]
     await state.set_data({'locale': lang})
     await callback.message.delete()
-    await callback.message.answer(_("Til tanlandi", locale=lang), reply_markup=main_menu_keyboard_buttons(callback.message, lang))
+    await callback.message.answer(_("Til tanlandi", locale=lang),
+                                  reply_markup=main_menu_keyboard_buttons(callback.message, lang))
 
 
 @user_callback_router.callback_query(F.data.startswith("confirm_transaction") | F.data.startswith("reject_transaction"))
@@ -33,8 +35,6 @@ async def confirm_transaction(callback: CallbackQuery, state: FSMContext):
 <b>Telefon:</b> {phone_number}
 <b>Yuan miqdori:</b> {cny_amount}¥
 <b>UZS miqdori:</b> {uzs_amount} UZS
-
-<b>Admin tranzaksiyani tasdiqlaysizmi👇</b>
     """).format(obj=transaction.id,
                 first_name=client.first_name,
                 phone_number=client.phone,
@@ -45,14 +45,22 @@ async def confirm_transaction(callback: CallbackQuery, state: FSMContext):
         await callback.message.bot.send_message(
             text=_("""✅Sizning so'rovingiz adminga yuborildi 24 soat gacha ko'rib chiqiladi😊"""),
             chat_id=callback.from_user.id)
-        await callback.message.bot.send_photo(chat_id=ADMIN, photo=FSInputFile(transaction.check_image), caption=text,
-                                              reply_markup=admin_transaction_confirmation(current_client_telegram_id,
-                                                                                          transaction.id),
-                                              parse_mode=ParseMode.MARKDOWN_V2.HTML
-                                              )
+        media = MediaGroupBuilder()
+        media.add(type='photo', media=FSInputFile(transaction.card_image))
+        media.add(type='photo', media=FSInputFile(transaction.check_image), caption=text,
+                  parse_mode=ParseMode.MARKDOWN_V2.HTML)
+        await callback.message.bot.send_media_group(chat_id=ADMIN, media=media.build())
+        await callback.message.bot.send_message(chat_id=ADMIN, text=_("<b>Admin tranzaksiyani tasdiqlaysizmi👇</b>"),
+                                                reply_markup=admin_transaction_confirmation(callback.from_user.id,
+                                                                                            transaction.id),
+                                                parse_mode=ParseMode.MARKDOWN_V2.HTML)
     else:
+        await callback.message.bot.delete_messages(chat_id=callback.message.chat.id,
+                                                   message_ids=[callback.message.message_id - 1,
+                                                                callback.message.message_id])
         await transaction.delete(transaction.id)
-        await callback.message.answer(text=_("Bekor qilindi❌"), reply_markup=main_menu_keyboard_buttons(callback.message))
+        await callback.message.answer(text=_("Bekor qilindi❌"),
+                                      reply_markup=main_menu_keyboard_buttons(callback.message))
 
 
 @user_callback_router.callback_query((F.data.startswith("admin_confirm_")) | (F.data.startswith("admin_reject_")))
@@ -61,6 +69,7 @@ async def admins_transaction_final_decision(callback: CallbackQuery, state: FSMC
     current_client_telegram_id = int(callback.data.split("_")[-1])
     if callback.data.startswith("admin_confirm_"):
         await callback.message.edit_reply_markup(callback.message.caption)
+        await callback.message.delete()
         await transaction.update(transaction.id, status=Transaction.Status.COMPLETED)
         await callback.message.bot.send_message(text=_("""
 Sizning sorovingiz qabul qilindi😊
@@ -68,7 +77,9 @@ To'lovlaringizni to'lovlar tarixidan kuzatishingiz mumkin👇
         """), chat_id=current_client_telegram_id)
         await state.clear()
     else:
-        await callback.message.delete()
+        await callback.message.bot.delete_messages(chat_id=callback.message.chat.id,
+                                                   message_ids=[callback.message.message_id - 1,
+                                                                callback.message.message_id])
         await transaction.update(transaction.id, status=Transaction.Status.CANCELED)
         await callback.message.bot.send_message(text=_("""
 Sizning sorovingiz qabul qilinmadi🥶❌

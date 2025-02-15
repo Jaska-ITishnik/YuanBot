@@ -7,6 +7,7 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, FSInputFile
 from aiogram.utils.i18n import gettext as _, lazy_gettext as __
+from aiogram.utils.media_group import MediaGroupBuilder
 from redis.commands.helpers import random_string
 from redis_dict import RedisDict
 
@@ -416,12 +417,15 @@ async def take_alipyqr(message: Message, bot: Bot, state: FSMContext):
 
 ~-~-~-~-~-~-~-~-~-~-~-~-~-~-~
 <b>📤To'laysiz:</b> <blockquote>{payment_amount} UZS</blockquote>
-
-<b>Barcha jarayonlar to'griligini tasdiqlang!</b>
     """).format(payment_amount=custom_humanize(str(data.get('uzs_amount'))), obj=transaction_obj.id)
-    await message.answer_photo(photo=FSInputFile(transaction_obj.check_image), caption=text,
-                               parse_mode=ParseMode.MARKDOWN_V2.HTML,
-                               reply_markup=transaction_confirmation(message.from_user.id, transaction_obj.id))
+    media = MediaGroupBuilder()
+    media.add(type='photo', media=FSInputFile(transaction_obj.card_image))
+    media.add(type='photo', media=FSInputFile(transaction_obj.check_image), caption=text,
+              parse_mode=ParseMode.MARKDOWN_V2.HTML)
+    await message.answer_media_group(media=media.build())
+    await message.answer(text=_("<b>Barcha jarayonlar to'griligini tasdiqlang!</b>"),
+                         reply_markup=transaction_confirmation(message.from_user.id, transaction_obj.id),
+                         parse_mode=ParseMode.MARKDOWN_V2.HTML)
 
 
 @user_message_router.message(F.text == __("💸Tranzaksiyalar tarixi"))
